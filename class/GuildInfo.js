@@ -1,6 +1,6 @@
 var mysql = require("../class/Database");
 const King = require("../class/King");
-
+var mysqlStandard = require("../mysqlCon");
 
 // Formerly known as kingsinfo
 class GuildInfo {
@@ -36,8 +36,10 @@ class GuildInfo {
     getGuild(guildID, callback) {
         var guildObj;
         var newQuery = new mysql();
+        var pQuery = `SELECT * FROM kingsinfo WHERE guildID = ?`;
+        let data = [guildID];
 
-        newQuery.query(`SELECT * FROM kingsinfo WHERE guildID = ` + guildID)
+        newQuery.query(pQuery,data)
             .then(rows => {
                 guildObj = rows[0];
                 console.log(guildObj);
@@ -62,7 +64,10 @@ class GuildInfo {
     checkTime(hour, minute, callback) {
         var thisGuildID;
         var newQuery = new mysql();
-        newQuery.query('SELECT * FROM kingsinfo WHERE hour = ' + hour + ` AND minute = ${minute}`)
+        var pQuery = `SELECT * FROM kingsinfo WHERE hour = ? AND minute = ?`;
+        let data = [hour, minute];
+
+        newQuery.query(pQuery,data)
             .then(rows => {
                 thisGuildID = rows[0];
                 console.log(thisGuildID);
@@ -75,18 +80,6 @@ class GuildInfo {
                 // Handle any error that occurred in any of the previous
                 // promises in the chain.
             });
-    }
-
-    // Parameter is a discord guild object. Returns a random member object from the guild.
-    getRandomMember(guild) {
-        var randomMember = guild.members.random(); // Uses the discord.js library
-        var isBot = randomMember.user['bot'];
-        while (isBot) {
-            randomMember = guild.members.random();
-            isBot = randomMember.user['bot'];
-        }
-        console.log(randomMember.user);
-        return randomMember;
     }
 
     isCurrentKing(guildObj, king) {
@@ -130,7 +123,10 @@ class GuildInfo {
     */
     updateKingDatabase(guildId, kingId) {
         var newQuery = new mysql();
-        newQuery.query(`UPDATE kingsinfo SET currentKing = ` + kingId + ` WHERE guildID = ` + guildId)
+        var pQuery = `UPDATE kingsinfo SET currentKing = ? WHERE guildID = ?`;
+        let data = [kingId,guildId];
+
+        newQuery.query(pQuery,guildId)
             .then(
                 confirmation => {
                     return "Succesfull";
@@ -141,17 +137,14 @@ class GuildInfo {
             });
     }
 
-    updateKing(guildID, kingID) {
-        var sql = `UPDATE kingsinfo 
-                    SET currentKing = ? 
-                    WHERE guildID = ?`;
-        let data = [discID, guildID];
-        mysql.con.query(sql, data, function (err, result) {
+    updateKing(kingID,guildID){
+        var pQuery = `UPDATE kingsinfo SET currentKing = ? WHERE guildID = ?`;
+        let data = [kingID,guildID];
+
+        mysqlStandard.con.query(pQuery,data, function (err, result) {
             if (err) throw err;
-            return result;
         });
     }
-
 
 };
 module.exports = GuildInfo;

@@ -1,5 +1,6 @@
 var mysql = require("../class/Database");
 const GuildInfo = require("../class/GuildInfo");
+var mysqlStandard = require("../mysqlCon");
 
 /* There is a difference between kingObj, and a user mapping from the discord api */
 
@@ -24,8 +25,10 @@ class King {
     getKing(guildID, discID,callback){ 
         var kingObj;
         var newQuery = new mysql();
+        var pQuery = `SELECT * FROM kings WHERE guildID = ? AND discID = ?`;
+        let data = [guildID, discID];
 
-        newQuery.query(`SELECT * FROM kings WHERE guildID = ` + guildID + ` AND discID = ${discID}`)
+        newQuery.query(pQuery,data)
         .then(rows => {
             kingObj = rows[0];
             console.log(kingObj);
@@ -39,20 +42,31 @@ class King {
         });
     }
 
-    updateAmountKing(guildID, discID, currentAmount){
+   /* updateAmountKing(guildID, discID, amount){
         var newQuery = new mysql();
         var newAmount = currentAmount++; 
-        console.log(newAmount);
+        var pQuery = `UPDATE kings SET amount = ? WHERE guildID = ? AND discID = ?`;
+        let data = [amount,guildID,discID];
 
-        newQuery.query("UPDATE kings SET amount = " + 15 + " WHERE guildID = " + guildID + ` AND discID = ` + findID)
+        newQuery.query(pQuery,data)
         .then(
             confirmation => {
-                return "Succesfull";
+                return callback(confirmation.affectedRows + " record(s) updated");
             }
         )
         .catch((err) => {
             // Handle any error that occured
         });
+    } */
+
+    updateAmountKing(guildID,discID,amount){
+        var pQuery = `UPDATE kings SET amount = ? WHERE guildID = ? AND discID = ?`;
+        let data = [amount,guildID,discID];
+
+        mysqlStandard.con.query(pQuery,data, function (err, result) {
+            if (err) throw err;
+        });
+        return true;
     }
 
     memberToKingObj(memberObj){

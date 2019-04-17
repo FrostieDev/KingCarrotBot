@@ -20,8 +20,10 @@ class BannedList {
 */
     getBannedList(guildID, callback) {
         var newQuery = new mysql();
+        var pQuery = `SELECT * FROM bannedlist WHERE guildID = ?`;
+        let data = [guildID];
 
-        newQuery.query(`SELECT * FROM bannedlist WHERE guildID = ` + guildID)
+        newQuery.query(pQuery,data)
             .then(rows => {
                 if (rows != undefined) {
                     return callback(rows);

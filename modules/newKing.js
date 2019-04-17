@@ -163,30 +163,44 @@ let updateDiscRole = function (discordRandomMember, validRole) {
 }
 
 /**
-* REVISE use ? for sql
-* @param {memberDiscAPI}    guildMember
+* +1 to new amount
+* @param {memberDiscAPI}    guildMember    A member object.
+* @returns {integer} Guildmember.amount +1 
 */
-let callUpdateKingAmount = function (guildMember, guildInfo, channelToSend) {
+let calcKingAmount = function (guildMember){
     return new Promise(function (resolve, reject) {
-        var newAmount = guildMember.amount + 1; // New amount for count of times a user has been a king
-
-        channelToSend.send(`The new king is <@${guildMember.discID}> and has been a king ${newAmount} times.`);
-
-        var sql = "UPDATE kings SET amount = " + newAmount + " WHERE guildID = " + guildInfo.guildID + ` AND discID = ` + guildMember.discID;
-        mysqlStandard.con.query(sql, function (err, result) {
-            if (err) throw err;
-            console.log(`${newAmount}`);
-        });
-        resolve(newAmount);
+        resolve(guildMember.amount + 1); // New amount for count of times a user has been a king
     });
 }
 
-//REVISE use ? for sql
-let callUpdateKing = function (guildMember, guildInfo) {
-    var sql = `UPDATE kingsinfo SET currentKing = ` + guildMember.discID + ` WHERE guildID = ` + guildInfo.guildID;
-    mysqlStandard.con.query(sql, function (err, result) {
-        if (err) throw err;
+/**
+ * Updates the database with new amount, and sends a message to chosen channel.
+* @param {King}    guildMember Am object of King.
+* @param {GuildInfo}   guildInfo    An object of GuildInfo.
+* @param {channel} channelToSend  A discord API channel.
+*/
+let callUpdateKingAmount = function (guildMember, guildInfo, channelToSend) {
+    return new Promise(function (resolve, reject) {
+
+        calcKingAmount(guildMember)
+        .then(function (result) {
+            channelToSend.send(`The new king is <@${guildMember.discID}> and has been a king ${result} times.`);
+
+            newGuildMember.updateAmountKing(guildInfo.guildID,guildMember.discID,result)
+
+            return "fullfill";
+        })
+        resolve(true);
     });
+}
+
+/**
+ * Updates the database with new king.
+* @param {King}    guildMember Am object of King.
+* @param {GuildInfo}   guildInfo    An object of GuildInfo.
+*/
+let callUpdateKing = function (guildMember, guildInfo) {
+    newGuildInfo.updateKing(guildMember.discID,guildInfo.guildID);
 }
 
 module.exports = {
