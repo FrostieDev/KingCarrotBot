@@ -1,38 +1,45 @@
 var mysql = require("../mysqlCon");
+const GuildInfo = require("../class/GuildInfo");
+
+var newKingModule = require("../modules/newKing");
+
+
+let callUpdateGuildTime = function (guildID, hourKing, minuteKing) {
+    return new Promise(function (resolve, reject) {
+        let guildInfo = new GuildInfo();
+        guildInfo.updateHourAndMinute(hourKing, minuteKing, guildID);
+        resolve(true);
+    });
+}
 
 exports.run = function (bot, message, args) {
     var permission = message.member.hasPermission("ADMINISTRATOR");
-    if (permission === true) {
+
+    if (permission) {
         // Select time 00:00
         var msgCont = message.content.split(' ').slice(1);
-        if (msgCont[0] === undefined) {
+        if (msgCont[0] === undefined) { // Check if anything was entered after command.
             message.channel.send("Timeslot was not entered.");
         } else {
             var fullString = msgCont[0].toString();
-            var stringArray = fullString.split(":");
-            var hourKing = parseInt(stringArray[0]);
-            var minuteKing = parseInt(stringArray[1]);
 
-            var guildID = message.guild.id;
+            var regExpPattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
-            if (Number.isInteger(hourKing) === false || Number.isInteger(minuteKing) === false) {
-                message.channel.send("You did not enter a legit number.");
+            if (fullString.match(regExpPattern)) {
+                var stringArray = fullString.split(":");
+                var hourKing = parseInt(stringArray[0]);
+                var minuteKing = parseInt(stringArray[1]);
+
+                var guildID = message.guild.id;
+
+                newKingModule.callGetGuild(guildID)
+                    .then(function (result) {
+                        message.channel.send("Updated time for selection to " + fullString + ".");
+                        callUpdateGuildTime(guildID, hourKing, minuteKing);
+                    })
+
             } else {
-                mysql.con.query(`SELECT * FROM kingsinfo WHERE guildID = ${guildID}`, function (err, result, fields) {
-                    if (err) {
-                        throw err;
-                    }
-                    else if (result.length > 0) {
-                        var sql = `UPDATE kingsinfo SET hour = ` + hourKing + `, minute =` + minuteKing + ` WHERE guildID = ` + guildID;
-                        mysql.con.query(sql, function (err, result) {
-                            if (err) throw err;
-                        });
-                        message.channel.send("You just set a new time");
-                    } else {
-                        message.channel.send("No king of the day setup has been set. Use /help or /command.")
-                    }
-
-                });
+                message.channel.send("Wrong input.");
             }
         }
     } else {

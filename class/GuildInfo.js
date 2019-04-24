@@ -39,7 +39,7 @@ class GuildInfo {
         var pQuery = `SELECT * FROM kingsinfo WHERE guildID = ?`;
         let data = [guildID];
 
-        newQuery.query(pQuery,data)
+        newQuery.query(pQuery, data)
             .then(rows => {
                 guildObj = rows[0];
                 console.log(guildObj);
@@ -67,7 +67,7 @@ class GuildInfo {
         var pQuery = `SELECT * FROM kingsinfo WHERE hour = ? AND minute = ?`;
         let data = [hour, minute];
 
-        newQuery.query(pQuery,data)
+        newQuery.query(pQuery, data)
             .then(rows => {
                 thisGuildID = rows[0];
                 console.log(thisGuildID);
@@ -117,16 +117,16 @@ class GuildInfo {
     }
 
     /**
-        * Update database with a new king.
+        * Update database with a new king. NOT WORKING
         * @param {String}   guildId         Needs a guild id for parameter.
         * @param {String}   kingId       Is a promise.
     */
     updateKingDatabase(guildId, kingId) {
         var newQuery = new mysql();
         var pQuery = `UPDATE kingsinfo SET currentKing = ? WHERE guildID = ?`;
-        let data = [kingId,guildId];
+        let data = [kingId, guildId];
 
-        newQuery.query(pQuery,guildId)
+        newQuery.query(pQuery, guildId)
             .then(
                 confirmation => {
                     return "Succesfull";
@@ -137,11 +137,31 @@ class GuildInfo {
             });
     }
 
-    updateKing(kingID,guildID){
+    /**
+    * Update database with a new king.
+    * @param {String}   guildID         Needs an guild id for parameter.
+    * @param {String}   kingID          Needs an disc id for parameter.
+*/
+    updateKing(kingID, guildID) {
         var pQuery = `UPDATE kingsinfo SET currentKing = ? WHERE guildID = ?`;
-        let data = [kingID,guildID];
+        let data = [kingID, guildID];
 
-        mysqlStandard.con.query(pQuery,data, function (err, result) {
+        mysqlStandard.con.query(pQuery, data, function (err, result) {
+            if (err) throw err;
+        });
+    }
+
+    /**
+* Update database with hour and minute.
+* @param {Int}   hour            23 hour integer.
+* @param {Int}   minute          59 minute integer.
+* @param {String}   guildID         Needs an guild id for parameter.
+*/
+    updateHourAndMinute(hour, minute, guildID) {
+        var pQuery = `UPDATE kingsinfo SET hour = ?, minute = ? WHERE guildID = ?`;
+        let data = [hour, minute, guildID];
+
+        mysqlStandard.con.query(pQuery, data, function (err, result) {
             if (err) throw err;
         });
     }
