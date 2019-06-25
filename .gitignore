@@ -26,6 +26,7 @@ config.json
 Database.js
 index.js
 mysqlCon.js
+test.js
 
 # =========================
 # Operating System Files
