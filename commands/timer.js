@@ -25,7 +25,7 @@ exports.run = function (bot, message, args) {
             // Callback function(Because async) - Get guild at selected hour
             // ADD LIST OF CHANNELS WITH THE SAME TIME AND LOOP THROUGHT IT.
             getGuild.checkTime(d.getHours(), d.getMinutes(), function (result) {
-                if (result != "No guild found") {
+                if (result != null) {
                     getGuild = result;
                     cont1nue = true;
 
@@ -37,7 +37,8 @@ exports.run = function (bot, message, args) {
                             guild = message.client.guilds.get(`${getGuild.guildID}`); // Discord API call for guild with matching Guild ID
                             sendToChannel = message.client.channels.get(getGuild.channelID); // Discord API call for channel with matching Channel ID
 
-                            newKing(guild, getGuild, sendToChannel);
+                                newKing(guild, getGuild, sendToChannel);
+                            
                         } else {
                             cont1nue = false;
                             console.log("This guild does not want a new king"); //Test console.log

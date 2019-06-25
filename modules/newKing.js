@@ -93,7 +93,7 @@ let randomMemberRecursion = function (array, guildInfo, guild) {
                         .then(function (result) {
                             resolve(result);
                         });
-                } else if (element == last_element){ // If everyone is banned.
+                } else if (element == last_element) { // If everyone is banned.
                     reject("Everyone is banned RIP.");
                 }
             }
@@ -167,7 +167,7 @@ let updateDiscRole = function (discordRandomMember, validRole) {
 * @param {memberDiscAPI}    guildMember    A member object.
 * @returns {integer} Guildmember.amount +1 
 */
-let calcKingAmount = function (guildMember){
+let calcKingAmount = function (guildMember) {
     return new Promise(function (resolve, reject) {
         resolve(guildMember.amount + 1); // New amount for count of times a user has been a king
     });
@@ -183,13 +183,13 @@ let callUpdateKingAmount = function (guildMember, guildInfo, channelToSend) {
     return new Promise(function (resolve, reject) {
 
         calcKingAmount(guildMember)
-        .then(function (result) {
-            channelToSend.send(`The new king is <@${guildMember.discID}> and has been a king ${result} times.`);
+            .then(function (result) {
+                channelToSend.send(`The new king is <@${guildMember.discID}> and has been a king ${result} times.`);
 
-            newGuildMember.updateAmountKing(guildInfo.guildID,guildMember.discID,result)
+                newGuildMember.updateAmountKing(guildInfo.guildID, guildMember.discID, result)
 
-            return "fullfill";
-        })
+                return "fullfill";
+            })
         resolve(true);
     });
 }
@@ -200,7 +200,7 @@ let callUpdateKingAmount = function (guildMember, guildInfo, channelToSend) {
 * @param {GuildInfo}   guildInfo    An object of GuildInfo.
 */
 let callUpdateKing = function (guildMember, guildInfo) {
-    newGuildInfo.updateKing(guildMember.discID,guildInfo.guildID);
+    newGuildInfo.updateKing(guildMember.discID, guildInfo.guildID);
 }
 
 module.exports = {
