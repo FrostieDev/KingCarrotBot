@@ -18,6 +18,15 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Node modules
+/node_modules/
+
+# Config files - Sensitive data.
+config.json
+Database.js
+index.js
+mysqlCon.js
+
 # =========================
 # Operating System Files
 # =========================
