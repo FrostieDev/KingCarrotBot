@@ -70,6 +70,7 @@ let randomMemberFunc = function (guildInfo, guild) {
 * @param {GuildInfo}   guildInfo    An object of GuildInfo.
 * @param {guild}   guild    A guild Discord API object.
 * @returns {RandomMemberDiscAPI} A member Discord API object.
+* TODO: Fix infinite loop if all members are banned or if only one member is not banned and he was previous king.
 */
 let randomMemberRecursion = function (array, guildInfo, guild) {
     console.log("third");
