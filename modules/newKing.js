@@ -219,7 +219,7 @@ let newKing = function(guild, messageChannel){
         if(result == false){
             reject(console.log("Promise was rejected. No guild found in db."));
         }
-        return newKingModule.callGetBannedList(guild.id);
+        return callGetBannedList(guild.id);
     })
     .then(function (result) { // If BannedList for guild does not exist? Handle.
         listOfBannedStatus = result;
