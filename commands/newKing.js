@@ -23,6 +23,9 @@ exports.run = function (bot, message, args) {
     newKingModule.callGetGuild(guild.id) // If guild does not exist in database? Handle.
         .then(function (result) {
             newGuildInfo = result;
+            if(result == false){
+                reject(console.log("Promise was rejected. No guild found in db."));
+            }
             return newKingModule.callGetBannedList(guild.id);
         })
         .then(function (result) { // If BannedList for guild does not exist? Handle.

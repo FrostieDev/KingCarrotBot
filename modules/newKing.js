@@ -19,11 +19,10 @@ let callGetGuild = function (guildID) {
     return new Promise(function (resolve, reject) {
         newGuildInfo.getGuild(guildID, function (result) {
             var tempGuildInfo = result;
-            console.log("first");
             if (tempGuildInfo != undefined) {
                 resolve(tempGuildInfo);
             } else {
-                reject("Does not compute");
+                reject(false);
             }
         });
     });
