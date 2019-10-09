@@ -24,7 +24,7 @@ module.exports = bot => {
                 var sendToChannel;
     
                 // Callback function(Because async) - Get guild at selected hour
-                // ADD LIST OF CHANNELS WITH THE SAME TIME AND LOOP THROUGHT IT.
+                // TODO: ADD LIST OF CHANNELS WITH THE SAME TIME AND LOOP THROUGHT IT.
                 getGuild.checkTime(d.getHours(), d.getMinutes(), function (result) {
                     if (result != null) {
                         getGuild = result;

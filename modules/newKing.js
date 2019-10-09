@@ -202,14 +202,55 @@ let callUpdateKing = function (guildMember, guildInfo) {
     newGuildInfo.updateKing(guildMember.discID, guildInfo.guildID);
 }
 
+/** 
+* Chooses a new king for the guild.
+* @param {guild} guild Discord API guild
+* @param {messageChannel} message.channel Discord text channel to send the updates.
+*/
+let newKing = function(guild, messageChannel){
+    var newGuildInfo = new GuildInfo(); // To put a database object into - kingsinfo to GuildInfo
+    var newGuildMember = new King(); // To put a database object into - kings to King
+    var validRole; // Discord role
+    var randomMember; // Take a random disc member from guild
+
+    callGetGuild(guild.id) // If guild does not exist in database? Handle.
+    .then(function (result) {
+        newGuildInfo = result;
+        if(result == false){
+            reject(console.log("Promise was rejected. No guild found in db."));
+        }
+        return newKingModule.callGetBannedList(guild.id);
+    })
+    .then(function (result) { // If BannedList for guild does not exist? Handle.
+        listOfBannedStatus = result;
+        return randomMemberRecursion(result, newGuildInfo, guild);
+    })
+    .then(function (result) { // If king is not in database? Handle.
+        randomMember = result;
+        return callGetKing(guild.id, result.user["id"], guild);
+    })
+    .then(function (result) {
+        newGuildMember = result;
+        return removeMemberAsKing(newGuildInfo,messageChannel,guild);
+    })
+    .then(function (result) {
+        validRole = result;
+        return updateDiscRole(randomMember,validRole);
+    })
+    .then(function (result) {
+        return callUpdateKingAmount(newGuildMember, newGuildInfo, messageChannel);
+    })
+    .then(function (result) {
+        return callUpdateKing(newGuildMember, newGuildInfo);
+    })
+    .catch(function (err) {
+        console.log("something went wrong: " + err);
+    })
+
+}
+
+
 module.exports = {
-    callGetGuild,
-    callGetBannedList,
-    randomMemberRecursion,
-    callGetKing,
-    removeMemberAsKing,
-    updateDiscRole,
-    callUpdateKingAmount,
-    callUpdateKing
+    newKing
 }
 
