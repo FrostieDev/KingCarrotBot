@@ -252,6 +252,9 @@ let newKing = function(guild, messageChannel){
 
 
 module.exports = {
-    newKing
+    newKing,
+    callGetGuild,
+    callGetKing,
+    callUpdateKing
 }
 

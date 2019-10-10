@@ -1,15 +1,12 @@
 var Promise = require('promise');
 var newKingModule = require("../modules/newKing");
 
-var BannedList = require("../class/BannedList");
 const GuildInfo = require("../class/GuildInfo");
-const King = require("../class/King");
 
-const config = require("../config.json");
 
 module.exports = bot => {
     bot.user.setActivity(`?help`);
-    console.log(`KingCarrot is ready to serve on ${bot.guilds.size} servers, for ${bot.users.size} users, at ${new Date()}`);
+    console.log(`KingCarrotBot is ready to serve on ${bot.guilds.size} servers, for ${bot.users.size} users, at ${new Date()}`);
 
             // Initial commands
             console.log(`King of the day timer just got activated. ${new Date()}`);
