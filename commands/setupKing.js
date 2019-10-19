@@ -15,20 +15,21 @@ exports.run = function (bot, message, args) {
 
             } else {
 
-                var msgCont = message.content.split(' ').slice(1);
-
                 var channelID = message.channel.id;
-                if (msgCont.length > 0) {
+
+                    try {
                     var roleID = message.mentions.roles.first().id;
-                    var sql = `INSERT INTO kingsinfo (guildID, channelID, roleID, hour, minute, updateChannel, updateTrue) VALUES ( ` + guildID + `, ` + channelID + `, ` + roleID + `, 18, 30, "not", 0)`;
+                    } catch (err){
+                        message.channel.send("No role was given");
+                    }
+                    if(roleID != undefined){
+                    var sql = `INSERT INTO kingsinfo (guildID, channelID, roleID, hour, minute, updateChannel, updateTrue) VALUES ( ` + guildID + `, ` + channelID + `, ` + roleID + `, 18, 30, "null", 0)`;
                     mysql.con.query(sql, function (err, result) {
                         if (err) throw err;
                         console.log("1 record inserted");
                     });
-                } else {
-                    message.channel.send("No role was given.");
-                    return;
-                }
+                } 
+
             }
         });
     } else {

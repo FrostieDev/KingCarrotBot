@@ -22,7 +22,7 @@ let callGetGuild = function (guildID) {
             if (tempGuildInfo != undefined) {
                 resolve(tempGuildInfo);
             } else {
-                reject(false);
+                reject("No guild found in DB.");
             }
         });
     });
@@ -37,12 +37,7 @@ let callGetBannedList = function (guildID) {
     return new Promise(function (resolve, reject) {
         newBannedList.getBannedList(guildID, function (result) {
             var tempListOfBannedStatus = result;
-            if (tempListOfBannedStatus != undefined) {
-                console.log("second");
                 resolve(tempListOfBannedStatus);
-            } else {
-                reject("Does not compute");
-            }
         });
     });
 };
@@ -114,8 +109,11 @@ let callGetKing = function (guildID, discID) {
     return new Promise(function (resolve, reject) {
         newGuildMember.getKing(guildID, discID, function (result) {
             var guildMember = result;
-            console.log("Fourth");
-            resolve(guildMember);
+            if (guildMember != false) {
+                resolve(guildMember);
+            } else {
+                reject("No member found in DB.");
+            }
         });
     });
 };
@@ -214,15 +212,12 @@ let newKing = function(guild, messageChannel){
     var validRole; // Discord role
     var randomMember; // Take a random disc member from guild
 
-    callGetGuild(guild.id) // If guild does not exist in database? Handle.
+    callGetGuild(guild.id)
     .then(function (result) {
         newGuildInfo = result;
-        if(result == false){
-            reject(console.log("Promise was rejected. No guild found in db."));
-        }
         return callGetBannedList(guild.id);
     })
-    .then(function (result) { // If BannedList for guild does not exist? Handle.
+    .then(function (result) {
         listOfBannedStatus = result;
         return randomMemberRecursion(result, newGuildInfo, guild);
     })
@@ -245,7 +240,10 @@ let newKing = function(guild, messageChannel){
         return callUpdateKing(newGuildMember, newGuildInfo);
     })
     .catch(function (err) {
-        console.log("something went wrong: " + err);
+        console.log("Promise was rejected: " + err);
+        if(err == "No guild found in DB."){
+            messageChannel.send("Please setup your guild.");
+        } 
     })
 
 }

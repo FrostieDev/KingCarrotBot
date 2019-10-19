@@ -42,11 +42,10 @@ class GuildInfo {
         newQuery.query(pQuery, data)
             .then(rows => {
                 guildObj = rows[0];
-                console.log(guildObj);
                 if (guildObj != undefined) {
                     return callback(guildObj);
                 } else {
-                    return callback("No guild found");
+                    return callback(undefined);
                 }
             }).catch((err) => {
                 // Handle any error that occurred

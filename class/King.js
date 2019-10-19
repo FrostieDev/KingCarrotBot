@@ -35,7 +35,7 @@ class King {
             if(kingObj != undefined){
                 return callback(kingObj);
             } else {
-                return callback("No king found");
+                return callback(false);
             }
         }).catch((err) => {
             // Handle any error that occurred
