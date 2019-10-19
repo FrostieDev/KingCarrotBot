@@ -3,11 +3,13 @@ const GuildInfo = require("../class/GuildInfo");
 
 class BannedList {
 
-    constructor(guildID, discID, banned, lastday) {
+    constructor(guildID, discID, banned, dateFrom, dateTo, amount) {
         this.guildID = guildID; // ID of guild which the user is located in
         this.discID = discID; // Personal ID of the user
         this.banned = banned; // banned false or true
-        this.lastday = lastday; // Last day of ban
+        this.dateFrom = dateFrom; // Last day of ban
+        this.dateTo = dateTo;
+        this.amount = amount;
     }
 
     /* Getters */
@@ -49,7 +51,9 @@ class BannedList {
             newBannedList.guildID = element.guildID;
             newBannedList.discID = element.discID;
             newBannedList.banned = element.banned;
-            newBannedList.lastday = element.lastday;
+            newBannedList.dateFrom = element.dateFrom;
+            newBannedList.dateTo = element.dateTo;
+            newBannedList.amount = element.amount;
             memberStatus.push(newBannedList);
         });
         return memberStatuses;

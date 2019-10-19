@@ -1,6 +1,6 @@
 var mysql = require("../class/Database");
 const GuildInfo = require("../class/GuildInfo");
-var mysqlStandard = require("../mysqlCon");
+var mysqlStandard = require("../database/mysqlCon");
 
 /* There is a difference between kingObj, and a user mapping from the discord api */
 

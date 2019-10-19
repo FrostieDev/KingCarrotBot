@@ -6,6 +6,8 @@ var mysql = require("../class/Database");
 var mysqlStandard = require("../mysqlCon");
 var BannedList = require("../class/BannedList");
 
+var userDB = require("../database/userDB");
+
 var newBannedList = new BannedList();
 var newGuildInfo = new GuildInfo(); // To put a database object into - kingsinfo to GuildInfo
 var newGuildMember = new King(); // To put a database object into - kings to King
@@ -112,11 +114,35 @@ let callGetKing = function (guildID, discID) {
             if (guildMember != false) {
                 resolve(guildMember);
             } else {
-                reject("No member found in DB.");
+                resolve(false);
             }
         });
     });
 };
+
+let newUser = function (guildID, randomMember ,channelToSend){
+    console.log("newUser function" + randomMember.user["id"]);
+    channelToSend.send("First time king. Congratz.");
+
+    //To object
+    var guildMember = new King;
+    guildMember.guildID = guildID;
+    guildMember.discID = randomMember.user["id"];
+    guildMember.discName = randomMember.user["username"];
+    guildMember.amount = 0;
+    guildMember.banned = 0;
+
+    //Insert into database
+    try{
+        userDB.insertUser(guildID,guildMember.discID,guildMember.discName,guildMember.amount);
+    } catch(err) {
+        console.log(err);
+    }
+
+    return guildMember;
+
+    }
+
 
 /**
 * 
@@ -221,13 +247,21 @@ let newKing = function(guild, messageChannel){
         listOfBannedStatus = result;
         return randomMemberRecursion(result, newGuildInfo, guild);
     })
-    .then(function (result) { // If king is not in database? Handle.
+    .then(function (result) {
         randomMember = result;
         return callGetKing(guild.id, result.user["id"], guild);
     })
     .then(function (result) {
-        newGuildMember = result;
-        return removeMemberAsKing(newGuildInfo,messageChannel,guild);
+        if(result == false){
+            var user = newUser(guild.id,randomMember,messageChannel);
+            return user;
+        } else {
+            return result;
+        }
+    })
+    .then(function (result) {
+            newGuildMember = result;
+            return removeMemberAsKing(newGuildInfo,messageChannel,guild);
     })
     .then(function (result) {
         validRole = result;

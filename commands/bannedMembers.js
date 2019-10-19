@@ -29,6 +29,9 @@ exports.run = function (bot, message, args) {
                     resolve("done");
                 }
             });
+            if(array.length == 0){
+                message.channel.send("No banned member in this guild.")
+            }
         });
     };
 

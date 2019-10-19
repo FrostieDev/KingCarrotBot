@@ -27,6 +27,7 @@ exports.run = function (bot, message, args) {
                     mysql.con.query(sql, function (err, result) {
                         if (err) throw err;
                         console.log("1 record inserted");
+                        message.channel.send("Guild was set.");
                     });
                 } 
 

@@ -18,8 +18,11 @@ exports.run = function (bot, message, args) {
                     if (err) throw err;
                 });
             } else {
-                var sql = `INSERT INTO bannedlist (guildID, discID, banned, lastday) VALUES ( ` + guildID + `, ` + banMemberID + `, ` + 1 + `, 2000-11-21)`;
-                mysql.con.query(sql, function (err, result) {
+                var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                var pQuery = `INSERT INTO bannedlist (guildID, discID, banned, dateFrom, dateTo, amount) VALUES (?, ?, ?, ?, ?, ? )`;
+                let data = [guildID,banMemberID,1,date,date,1]
+
+                mysql.con.query(pQuery,data, function (err, result) {
                     if (err) throw err;
                     console.log("1 record inserted");
                 });

@@ -1,14 +1,14 @@
 var mysqlStandard = require("./mysqlCon");
 
 function insertUser(guildID,discID,name,amount){
-    var pQuery = `INSERT INTO kings ( guildID,discID,name,amount ) VALUES ( ?,?,?,?,1 )`;
+    var pQuery = `INSERT INTO kings ( guildID,discID,name,amount,banned ) VALUES ( ?,?,?,1,0 )`;
     let data = [guildID,discID,name,amount];
 
     mysqlStandard.con.query(pQuery,data, function(err,result){
         if (err) {
             throw err
         } else {
-            return true;
+            return result;
         };
     });
 } 
@@ -25,3 +25,8 @@ function updateUserAmount(guildID,discID,amount){
         };
     });
 }
+
+module.exports = {
+insertUser,
+updateUserAmount
+};
