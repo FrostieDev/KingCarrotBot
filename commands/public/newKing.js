@@ -1,4 +1,4 @@
-var newKingModule = require("../modules/newKing");
+var newKingModule = require("../../modules/newKing");
 
 exports.run = function (bot, message, args) {
     var permission = message.member.hasPermission("ADMINISTRATOR"); // Check if Admin

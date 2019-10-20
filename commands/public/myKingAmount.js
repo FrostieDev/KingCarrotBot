@@ -1,5 +1,5 @@
-var mysql = require("../mysqlCon");
-const King = require("../class/King");
+var mysql = require("../../mysqlCon");
+const King = require("../../class/King");
 exports.run = function (bot, message, args) {
     var guildID = message.guild.id;
     var discID = message.author.id;

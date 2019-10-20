@@ -1,4 +1,4 @@
-const GuildInfo = require("../class/GuildInfo");
+const GuildInfo = require("../../class/GuildInfo");
 
 exports.run = function (bot, message, args) {
 var thisGuild = message.guild;

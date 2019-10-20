@@ -1,4 +1,4 @@
-var mysql = require("../mysqlCon");
+var mysql = require("../../mysqlCon");
 // To choose which channel the daily king function will send message to.
 exports.run = function (bot, message, args) {
     var permission = message.member.hasPermission("ADMINISTRATOR");

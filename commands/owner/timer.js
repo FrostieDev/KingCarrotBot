@@ -1,11 +1,11 @@
 var Promise = require('promise');
-var newKingModule = require("../modules/newKing");
+var newKingModule = require("../../modules/newKing");
 
-var BannedList = require("../class/BannedList");
-const GuildInfo = require("../class/GuildInfo");
-const King = require("../class/King");
+var BannedList = require("../../class/BannedList");
+const GuildInfo = require("../../class/GuildInfo");
+const King = require("../../class/King");
 
-const config = require("../config.json");
+const config = require("../../config.json");
 
 exports.run = function (bot, message, args) {
     if (message.author.id == config.ownerID) {

@@ -1,4 +1,4 @@
-var mysql = require("../mysqlCon");
+var mysql = require("../../mysqlCon");
 
 exports.run = function (bot, message, args) {
     var guildID = message.guild.id;

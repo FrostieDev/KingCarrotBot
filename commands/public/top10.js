@@ -1,5 +1,5 @@
-var mysql = require("../mysqlCon");
-const config = require("../config.json");
+var mysql = require("../../mysqlCon");
+const config = require("../../config.json");
 
 exports.run = function (bot, message, args) {
     var guildID = message.guild.id;

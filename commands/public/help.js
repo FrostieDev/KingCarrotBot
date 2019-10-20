@@ -1,20 +1,20 @@
-const testFolder = './commands/';
+const commandsFolder = './commands/public';
 const fs = require('fs');
-const config = require("../config.json");
+const config = require("../../config.json");
 
 
 exports.run = function (bot, message, args) {
-    var args3 = "";
+    var finalString = "";
 
     let getFiles = function () {
         return new Promise(function (resolve, reject) {
-            fs.readdir(testFolder, (err, files) => {
+            fs.readdir(commandsFolder, (err, files) => {
                 files.forEach(file => {
-                    var args2 = file.split(".").slice(0, 1);
-                    args3 += "?" + args2 + " ";
+                        var fileName = file.split(".").slice(0, 1);
+                        finalString += "?" + fileName + " ";
                 });
-                console.log(args3); // use those file and return it as a REST API
-                resolve(args3);
+                console.log(finalString); 
+                resolve(finalString);
             })
         });
     };

@@ -1,4 +1,4 @@
-var bannedlist = require("../class/BannedList")
+var bannedlist = require("../../class/BannedList")
 
 exports.run = function (bot, message, args) {
     var guildID = message.guild.id;

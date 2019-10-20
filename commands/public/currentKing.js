@@ -1,6 +1,6 @@
 var Promise = require('promise');
-const GuildInfo = require("../class/GuildInfo");
-const King = require("../class/King");
+const GuildInfo = require("../../class/GuildInfo");
+const King = require("../../class/King");
 
 exports.run = function (bot, message, args) {
 var guildid = message.guild;

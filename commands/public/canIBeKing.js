@@ -1,5 +1,5 @@
-const GuildInfo = require("../class/GuildInfo");
-const newKingModule = require("../modules/newKing");
+const GuildInfo = require("../../class/GuildInfo");
+const newKingModule = require("../../modules/newKing");
 
 exports.run = function (bot, message, args) {
 var authorDiscID = message.author.id;

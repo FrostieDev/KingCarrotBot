@@ -1,6 +1,8 @@
-module.exports = bot => {
+var mysqlStandard = require("../database/mysqlCon");
+
+module.exports = (oldMember,newMember) => {
     var guildID = oldMember.guild.id;
-    con.query(`SELECT * FROM kingsinfo WHERE guildID = ${guildID}`, function (err, result, fields) {
+    mysqlStandard.con.query(`SELECT * FROM kingsinfo WHERE guildID = ${guildID}`, function (err, result, fields) {
         if (err) {
             throw err;
         } else {
@@ -13,7 +15,7 @@ module.exports = bot => {
                         if(userWhoChanged.username === newMember.user.username){
                             newMember.user.client.channels.find("id", `${channelSend}`).send(`${userWhoChanged} changed his own name from ${oldMember.displayName} to ${newMember.displayName}!.`);
                             } else {
-                        var serverToSend = newMember.user.client.channels.find("id", `${channelSend}`).send(`${userWhoChanged} changed ${newMember.user.username}'s name from ${oldMember.displayName} to ${newMember.displayName}.`);
+                        newMember.user.client.channels.find("id", `${channelSend}`).send(`${userWhoChanged} changed ${newMember.user.username}'s name from ${oldMember.displayName} to ${newMember.displayName}.`);
                     }
                     }
                 });

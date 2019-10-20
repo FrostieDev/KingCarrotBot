@@ -1,6 +1,6 @@
-const GuildInfo = require("../class/GuildInfo");
+const GuildInfo = require("../../class/GuildInfo");
 
-var newKingModule = require("../modules/newKing");
+var newKingModule = require("../../modules/newKing");
 
 
 let callUpdateGuildTime = function (guildID, hourKing, minuteKing) {

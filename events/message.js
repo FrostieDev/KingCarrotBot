@@ -8,11 +8,19 @@ module.exports = message => {
 	const args = message.content.split(' ');
 	const command = args.shift().slice(config.prefix.length);
 
-
+	if(!command.startsWith("owner")){
 	try {
-		let cmdFile = require(`../commands/${command}`);
+		let cmdFile = require(`../commands/public/${command}`);
 		cmdFile.run(client, message, args);
 	} catch (err) {
 		console.log(`Command ${command} failed\n${err.stack}`);
+	}
+	} else {
+		try {
+			let cmdFile = require(`../commands/owner/${command}`);
+			cmdFile.run(client, message, args);
+		} catch (err) {
+			console.log(`Command ${command} failed\n${err.stack}`);
+		}
 	}
 };

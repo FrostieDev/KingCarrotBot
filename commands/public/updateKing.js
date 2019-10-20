@@ -1,6 +1,6 @@
 var Promise = require('promise');
-const GuildInfo = require("../class/GuildInfo");
-const config = require("../config.json");
+const GuildInfo = require("../../class/GuildInfo");
+const config = require("../../config.json");
 // Updates the currentKing in database with the id of the author of the command, in the guild which it was written.
 
 exports.run = function (bot, message, args) {
