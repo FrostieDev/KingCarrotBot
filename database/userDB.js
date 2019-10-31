@@ -26,7 +26,25 @@ function updateUserAmount(guildID,discID,amount){
     });
 }
 
+function getUsersSortedByAmount(guildID, callback){
+var pQuery = "SELECT * FROM kings WHERE guildID = ? ORDER BY amount DESC LIMIT 10"
+let data = [guildID];
+
+mysqlStandard.con.query(pQuery,data,function (err,result){
+    if(err){
+        throw err
+    } else {
+        if ( result != 0 ) {
+            return callback(result);
+        } else {
+            return callback(null);
+        }
+    };
+});
+}
+
 module.exports = {
 insertUser,
-updateUserAmount
+updateUserAmount,
+getUsersSortedByAmount
 };

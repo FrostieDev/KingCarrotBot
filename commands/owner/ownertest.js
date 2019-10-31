@@ -1,6 +1,6 @@
+const Discord = require('discord.js');
 const config = require("../../config.json");
 const userDB = require("../../database/userDB");
-const Discord = require('discord.js');
 
 exports.run = function (bot, message, args) {
     var guildID = message.guild.id;

@@ -70,8 +70,6 @@ let randomMemberFunc = function (guildInfo, guild) {
 * TODO: Fix infinite loop if all members are banned or if only one member is not banned and he was previous king.
 */
 let randomMemberRecursion = function (array, guildInfo, guild) {
-    console.log("third");
-    var last_element = array[array.length - 1];
     var member = randomMemberFunc(guildInfo, guild);
     var found = false;
 
@@ -88,11 +86,10 @@ let randomMemberRecursion = function (array, guildInfo, guild) {
                     console.log("This user is banned.");
                     return randomMemberRecursion(array, guildInfo, guild)
                         .then(function (result) {
+                            console.log(result);
                             resolve(result);
                         });
-                } else if (element == last_element) { // If everyone is banned.
-                    reject("Everyone is banned RIP.");
-                }
+                } 
             }
         });
         if (!found) { // If user is not in database.
@@ -120,8 +117,29 @@ let callGetKing = function (guildID, discID) {
     });
 };
 
+/** 
+* To avoid chinese characters etc + general security.
+* @param {userName} userName string value
+* @returns {boolean} True if valid.
+*/
+function regExUserNameChecker(userName,callback){
+    var regExpPattern = /^[a-zA-Z][a-zA-Z0-9-_]{3,32}/;
+    if(userName.match(regExpPattern)){
+        return callback(true);
+    } else {
+        return callback(false);
+    }
+}
+
+/**
+ * Inserting new user into database.
+ * @param {guildID} guildID
+ * @param {randomMember} discordMemberAPI
+ * @param {channelToSend} discordChannelAPI
+ * @return {guildMember} KingObject
+*/
 let newUser = function (guildID, randomMember ,channelToSend){
-    console.log("newUser function" + randomMember.user["id"]);
+    console.log("newUser function" + randomMember.user["username"]);
     channelToSend.send("First time king. Congratz.");
 
     //To object
@@ -132,15 +150,25 @@ let newUser = function (guildID, randomMember ,channelToSend){
     guildMember.amount = 0;
     guildMember.banned = 0;
 
-    //Insert into database
-    try{
-        userDB.insertUser(guildID,guildMember.discID,guildMember.discName,guildMember.amount);
-    } catch(err) {
-        console.log(err);
-    }
+    regExUserNameChecker(guildMember.discName,function(result){
+        if (result == true){
+        //Insert into database
+        try{
+            userDB.insertUser(guildID,guildMember.discID,guildMember.discName,guildMember.amount);
+        } catch(err) {
+            console.log(err);
+        }
+        } else {
+        //Insert into database - NON IMPORTANT DATA.
+        try{
+            userDB.insertUser(guildID,guildMember.discID,"Illegal characters",guildMember.amount);
+        } catch(err) {
+            console.log(err);
+        }
+        }
 
+    })
     return guildMember;
-
     }
 
 
@@ -155,34 +183,26 @@ let newUser = function (guildID, randomMember ,channelToSend){
 let removeMemberAsKing = function (guildInfo, channelToSend, guild) {
     return new Promise(function (resolve, reject) {
         var tempValidRole = guild.roles.get(guildInfo.roleID); // Disc API get role object API
-        let membersInRole = tempValidRole.members;
-
-        // Remove previous king --------------------------------------------------------
-        let memberList = membersInRole.last();
-        if (memberList !== undefined) {
-            let userRemoveID = memberList["id"];
-            let userToRemove = guild.members.get(userRemoveID);
-
-            if (userToRemove !== undefined) {
-                userToRemove.removeRole(tempValidRole);
-                channelToSend.send(`${userToRemove} has been dethroned and is now a pleb!`);
-            }
-            resolve(tempValidRole);
+        let lastKing = guild.members.get(guildInfo.currentKing); // Disc API member for last king.
+        // Remove previous king
+        if (lastKing != null) {
+            lastKing.removeRole(tempValidRole);
+            channelToSend.send(`${lastKing} has been dethroned and is now a pleb!`);
         } else {
             channelToSend.send(`There is no current king.`);
-            resolve(tempValidRole);
         }
+        resolve(tempValidRole);
     });
 };
 
 /**
 * Update the discord member with king role in the client.
-* @param {memberDiscAPI}    discordRandomMember    A member from Discord API.
+* @param {memberDiscAPI}    memberDiscAPI    A member from Discord API.
 */
-let updateDiscRole = function (discordRandomMember, validRole) {
+let updateDiscRole = function (memberDiscAPI, validRole) {
     return new Promise(function (resolve, reject) {
         console.log(`King of the day command just fired. ${new Date()}`);
-        resolve(discordRandomMember.addRole(validRole));
+        resolve(memberDiscAPI.addRole(validRole));
     });
 }
 
@@ -220,7 +240,7 @@ let callUpdateKingAmount = function (guildMember, guildInfo, channelToSend) {
 
 /**
  * Updates the database with new king.
-* @param {King}    guildMember Am object of King.
+* @param {King}    guildMember An object of King.
 * @param {GuildInfo}   guildInfo    An object of GuildInfo.
 */
 let callUpdateKing = function (guildMember, guildInfo) {
@@ -235,8 +255,8 @@ let callUpdateKing = function (guildMember, guildInfo) {
 let newKing = function(guild, messageChannel){
     var newGuildInfo = new GuildInfo(); // To put a database object into - kingsinfo to GuildInfo
     var newGuildMember = new King(); // To put a database object into - kings to King
-    var validRole; // Discord role
-    var randomMember; // Take a random disc member from guild
+    var validRole; // Discord API role
+    var randomMember; // Member from discord API
 
     callGetGuild(guild.id)
     .then(function (result) {
@@ -260,8 +280,8 @@ let newKing = function(guild, messageChannel){
         }
     })
     .then(function (result) {
-            newGuildMember = result;
-            return removeMemberAsKing(newGuildInfo,messageChannel,guild);
+        newGuildMember = result;
+        return removeMemberAsKing(newGuildInfo,messageChannel,guild);
     })
     .then(function (result) {
         validRole = result;
@@ -275,9 +295,18 @@ let newKing = function(guild, messageChannel){
     })
     .catch(function (err) {
         console.log("Promise was rejected: " + err);
-        if(err == "No guild found in DB."){
+        if(err == "No guild found in DB.")
+        {
             messageChannel.send("Please setup your guild.");
         } 
+        else if(err == "DiscordAPIError: Missing Permissions")
+        {
+            messageChannel.send("Bot does not have permissions for this.");
+        } 
+        else
+        {
+            message.channel.send("Something went wrong. ERROR: 500");
+        }
     })
 
 }
@@ -287,6 +316,8 @@ module.exports = {
     newKing,
     callGetGuild,
     callGetKing,
-    callUpdateKing
+    callUpdateKing,
+    updateDiscRole,
+    callGetBannedList
 }
 

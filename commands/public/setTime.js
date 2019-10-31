@@ -1,12 +1,10 @@
-const GuildInfo = require("../../class/GuildInfo");
-
+const guildDB = require("../../database/guildDB");
 var newKingModule = require("../../modules/newKing");
 
 
 let callUpdateGuildTime = function (guildID, hourKing, minuteKing) {
     return new Promise(function (resolve, reject) {
-        let guildInfo = new GuildInfo();
-        guildInfo.updateHourAndMinute(hourKing, minuteKing, guildID);
+        guildDB.updateHourAndMinute(hourKing, minuteKing, guildID);
         resolve(true);
     });
 }
