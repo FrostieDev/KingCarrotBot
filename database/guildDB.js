@@ -59,9 +59,24 @@ function getGuildByHourAndMinute(hour, minute, callback){
     })
 }
 
+function getGuildById(guildID, callback){
+    var pQuery = `SELECT * FROM kingsinfo WHERE guildID = ?`;
+    let data = [guildID];
+
+    mysqlStandard.con.query(pQuery,data, function(err,result){
+        if(err) throw err;
+        if (result.length != 0) {
+            return callback(result[0]);
+        } else {
+            return callback(null);
+        }
+    });
+}
+
 module.exports = {
     updateHourAndMinute,
     updateKing,
     updateKingActive,
-    getGuildByHourAndMinute
+    getGuildByHourAndMinute,
+    getGuildById
 }
